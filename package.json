@@ -1,0 +1,11 @@
+{
+  "name": "aquarium-workshop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An interactive six-step aquarium workshop built with HTML Canvas.",
+  "scripts": {
+    "check": "node --check app.js",
+    "test": "node tests/aquarium.test.cjs app.js"
+  },
+  "engines": { "node": ">=20" }
+}

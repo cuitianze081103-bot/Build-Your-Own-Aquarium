@@ -1,0 +1,23 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const elements=new Map(),listeners={},timers=[];
+const drawing=new Proxy({createLinearGradient:()=>({addColorStop(){}})}, {get:(o,k)=>o[k]||(()=>{})});
+function element(key){if(!elements.has(key))elements.set(key,{textContent:'',innerHTML:'',hidden:false,value:key==='#quantity'?'1':key==='#size'?'35':key==='#color'?'#e69d62':key==='#type'?'Clownfish':'',classList:{add(){},remove(){},toggle(){}},setAttribute(){},setPointerCapture(){},getContext:()=>drawing,toDataURL:()=>'',getBoundingClientRect:()=>key==='#bin'?{left:1100,top:0,right:1200,bottom:100}:{left:0,top:0,right:1000,bottom:580,width:1000,height:580}});return elements.get(key)}
+const sandbox={console,document:{querySelector:element,querySelectorAll:()=>[],visibilityState:'visible',createElement:()=>({click(){}})},window:{addEventListener:(k,f)=>listeners[k]=f},matchMedia:()=>({matches:false}),setInterval(){},setTimeout:(f,ms)=>{const t={f,ms};timers.push(t);return t},clearTimeout:t=>{if(t)t.cancelled=true},requestAnimationFrame(){},localStorage:{setItem(){}},Math};
+vm.createContext(sandbox);vm.runInContext(fs.readFileSync(process.argv[2],'utf8'),sandbox);
+const run=code=>vm.runInContext(code,sandbox);
+const advance=()=>{const t=timers.findLast(t=>t.ms===1800&&!t.cancelled);assert(t,'automatic advancement timer');t.f()};
+assert.equal(run('step'),0);assert.equal(run('allowed(4)'),false);
+run("$('#next').onclick()");assert.equal(run('step'),1);
+assert.equal(run('allowed(2)'),false);
+run('holding=true;pointer={x:500,y:350,inside:true};for(let i=0;i<100;i++)update(.05);holding=false');assert(run('ready(1)'));advance();assert.equal(run('step'),2);
+run("drag={kind:'newplant',type:0};holding=true");listeners.pointerup({clientX:500,clientY:250});assert.equal(run('plants.length'),0,'reject planting above sand');
+run("drag={kind:'newplant',type:0};holding=true");listeners.pointerup({clientX:500,clientY:520});assert.equal(run('plants.length'),1);advance();assert.equal(run('step'),3);
+run("tool='water';holding=true;for(let i=0;i<150;i++)update(.05);holding=false");assert.equal(run('water'),1);advance();assert.equal(run('step'),4);
+element('#quantity').value='7';run('addFish()');assert.equal(run('fish.length'),0);
+element('#quantity').value='6';run('addFish()');assert.equal(run('fish.length'),6);element('#quantity').value='1';run('addFish()');assert.equal(run('fish.length'),6);advance();assert.equal(run('step'),5);
+assert.equal(run('allowed(6)'),false,'free play stays locked before feeding');
+run('dropFood(fish[0].x,fish[0].y);update(.016)');assert(run('done[5]'),'eating food completes feeding');advance();assert.equal(run('step'),6);
+run("$('#edit').onclick()");assert(run('edit'));assert.equal(element('#edit').textContent,'Done');run("$('#edit').onclick()");assert.equal(run('edit'),false);
+run("$('#restart').onclick()");assert.equal(run('step'),0);assert.equal(run('fish.length'),0);assert.equal(run('plants.length'),0);assert.equal(run('water'),0);assert.equal(run('sand.reduce((a,b)=>a+b,0)'),0);
+assert(!/[\u3400-\u9fff]/.test(fs.readFileSync(process.argv[2],'utf8')));
+console.log('PASS: locked steps, automatic progression, sand, plant placement, water, fish limit, feeding, edit/done, restart, English-only source.');

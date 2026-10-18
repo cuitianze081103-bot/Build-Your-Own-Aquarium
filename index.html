@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Shape the sand, grow a garden, and bring your own little aquarium to life.">
+  <title>Build Your Own Aquarium</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header><a class="brand" href="./" aria-label="Aquarium Workshop home">aquarium<span>workshop</span></a><div class="header-actions"><button id="sound">Sound Off</button><button id="restart">Restart</button></div></header>
+  <section class="intro"><h1>Build Your Own Aquarium</h1></section>
+  <nav class="steps" aria-label="Building steps"></nav>
+  <section class="guidance" aria-live="polite" aria-atomic="true"><div><h2 id="step-title">Welcome</h2><p id="instruction">Follow the steps and create an aquarium that is uniquely yours.</p><span id="toast"></span></div><button class="primary" id="next">Start Building <span aria-hidden="true">↗</span></button></section>
+  <section class="workbench">
+    <div class="tank-wrap"><div class="tank"><canvas id="aquarium" width="1000" height="580" tabindex="0" aria-label="Interactive aquarium. Use the tools to shape sand, plant, fill, and feed. Arrow keys move the interaction point; Space uses the current tool."></canvas></div><div class="tank-foot"><span id="tank-status">A little world, made by you.</span><span id="count">0 / 6 fish</span></div></div>
+    <aside class="toolbox"><div class="toolbox-head"><h2>Your tools</h2><span id="mode">Build Mode</span></div><div class="tools">
+      <button class="tool" data-tool="sand" data-level="1"><canvas width="100" height="90" data-art="sand"></canvas><span>Sand bag</span></button>
+      <button class="tool" data-tool="shovel" data-level="1"><canvas width="100" height="90" data-art="shovel"></canvas><span>Shovel</span></button>
+      <button class="tool" data-tool="plant" data-level="2"><canvas width="100" height="90" data-art="plant"></canvas><span>Plants</span></button>
+      <button class="tool" data-tool="water" data-level="3"><canvas width="100" height="90" data-art="water"></canvas><span>Faucet</span></button>
+      <button class="tool" data-tool="fish" data-level="4"><canvas width="100" height="90" data-art="fish"></canvas><span>Fish</span></button>
+      <button class="tool" data-tool="food" data-level="5"><canvas width="100" height="90" data-art="food"></canvas><span>Feed Fish</span></button>
+    </div><div id="options"></div><button id="bin" class="bin" aria-label="Drag a plant here to remove it">Remove <span aria-hidden="true">×</span></button><div class="hint" id="hint" role="status"></div></aside>
+  </section>
+  <footer><span>Make room for a little wonder.</span><div><button id="edit" hidden>Edit</button><button id="save">Save Aquarium</button></div></footer>
+</main><script src="app.js"></script>
+</body></html>
